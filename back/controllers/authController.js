@@ -70,8 +70,14 @@ const login = async (req, res) => {
     res.json({token})
  }
 
+ const user = async(req, res) => {
+    const { user } = req
+    res.json(user)
+ }
+
 export {
     register,
     veryfyAccount,
-    login
+    login,
+    user
 }
