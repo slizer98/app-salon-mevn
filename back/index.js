@@ -5,7 +5,8 @@ import cors from 'cors'
 import { db } from "./config/db.js";
 import servicesRoutes from './routes/servicesRoutes.js'
 import authRoutes from './routes/authRoutes.js'
-import authRoutes from './routes/appointmentRoutes.js'
+import appointmentRoutes from './routes/appointmentRoutes.js'
+
 dotenv.config();
 
 const app = express()
