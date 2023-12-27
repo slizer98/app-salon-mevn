@@ -1,5 +1,5 @@
 import express  from "express";
-import { createAppointment, getAppointmentByDate } from "../controllers/appointmentController.js"; 
+import { createAppointment, getAppointmentByDate, getAppointmentById } from "../controllers/appointmentController.js"; 
 import authMiddleware from "../middleware/authMiddleware.js";
 
 
@@ -9,5 +9,7 @@ router.route('/')
     .post(authMiddleware, createAppointment)
     .get(authMiddleware, getAppointmentByDate)
 
+router.route('/:id')
+    .get(authMiddleware, getAppointmentById)
 
 export default router

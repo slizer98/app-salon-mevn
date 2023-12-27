@@ -32,6 +32,11 @@ export const useAppointmentsStore = defineStore('appointments', () => {
         const { data } = await AppointmentAPI.getByDate(date.value, )
         appointmentsByDate.value = data  
     })
+
+    function setSelectedAppointmend(appointment) {
+        console.log(appointment)
+        services.value = appointment.services
+    }
     
     function onServiceSelected(service) {
         if(services.value.some(selectedService => selectedService._id === service._id)) {
@@ -107,6 +112,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
         date,
         hours,
         time,
+        setSelectedAppointmend,
         onServiceSelected, 
         createAppointment,
         isServiceSelected,

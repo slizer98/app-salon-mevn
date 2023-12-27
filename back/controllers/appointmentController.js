@@ -1,5 +1,6 @@
 import { parse, formatISO, startOfDay, endOfDay, isValid } from 'date-fns'
 import Appointment from '../models/Appointment.js'
+import { handleNotFoundError, validateObjectId } from "../utils/index.js";
 
 const createAppointment = async(req, res) => {
     const appointment = req.body
@@ -34,7 +35,23 @@ const getAppointmentByDate = async(req,res) => {
     res.json(appointments)
 }
 
+const getAppointmentById = async(req, res) => {
+    const { id } = req.params
+    if(validateObjectId(id, res)) return
+    
+    const appointment = await Appointment.findById(id).populate('services')
+    if(!appointment) {
+        return handleNotFoundError('La cita no existe', res)
+    }
+    if(appointment.user.toString() !== req.user._id.toString()) {
+        const error = new Error('No tienes los permisos')
+        return res.status(403).json({msg: error.message})
+    }
+    res.json(appointment)
+}
+
 export {
     createAppointment,
-    getAppointmentByDate
+    getAppointmentByDate,
+    getAppointmentById
 }

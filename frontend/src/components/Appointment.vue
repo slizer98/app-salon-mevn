@@ -1,12 +1,13 @@
 <script setup>
   import { formatCurrency } from '../helpers';
-import { displayDate } from '../helpers/date'
+  import { displayDate } from '../helpers/date'
 
   defineProps({
     appointment: {
       type: Object
     }
   })
+
 </script>
 
 <template>
@@ -24,8 +25,18 @@ import { displayDate } from '../helpers/date'
       Total a pagar: <span class="text-blue-600">{{ formatCurrency(appointment.totalAmount) }}</span>
     </p>
     <div class="flex gap-2 items-center">
-      <button class="bg-slate-600 rounded-lg p-3 text-white text-sm uppercase flex-1 md:flex-none">Editar Cita</button>
-      <button class="bg-red-600 rounded-lg p-3 text-white text-sm uppercase flex-1 md:flex-none">Cancelar Cita</button>
+      <RouterLink
+        :to="{name: 'edit-appointment', params: { id: appointment._id } }"
+        class="bg-slate-600 rounded-lg p-3 text-white text-sm uppercase flex-1 md:flex-none"
+      >
+        Editar Cita
+      </RouterLink>
+
+      <button
+        class="bg-red-600 rounded-lg p-3 text-white text-sm uppercase flex-1 md:flex-none"
+      >
+        Cancelar Cita
+      </button>
     </div>
   </div>
 </template>
