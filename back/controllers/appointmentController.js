@@ -50,8 +50,58 @@ const getAppointmentById = async(req, res) => {
     res.json(appointment)
 }
 
+const updateAppointment = async(req, res) => {
+    const { id } = req.params
+    if(validateObjectId(id, res)) return
+    
+    const appointment = await Appointment.findById(id).populate('services')
+    if(!appointment) {
+        return handleNotFoundError('La cita no existe', res)
+    }
+    if(appointment.user.toString() !== req.user._id.toString()) {
+        const error = new Error('No tienes los permisos')
+        return res.status(403).json({msg: error.message})
+    }
+
+    const { date, time, totalAmount, services } = req.body
+    appointment.date = date
+    appointment.time = time
+    appointment.totalAmount = totalAmount
+    appointment.services = services
+
+    try {
+        await appointment.save()
+        res.json({msg: 'Cita actualizada correctamente'})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const deleteAppointment = async(req, res) => {
+    const { id } = req.params
+    if(validateObjectId(id, res)) return
+    
+    const appointment = await Appointment.findById(id).populate('services')
+    if(!appointment) {
+        return handleNotFoundError('La cita no existe', res)
+    }
+    if(appointment.user.toString() !== req.user._id.toString()) {
+        const error = new Error('No tienes los permisos')
+        return res.status(403).json({msg: error.message})
+    }
+
+    try {
+        await appointment.deleteOne()
+        res.json({msg: 'Cita cancelada correctamente'})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export {
     createAppointment,
     getAppointmentByDate,
-    getAppointmentById
+    getAppointmentById,
+    updateAppointment,
+    deleteAppointment
 }
