@@ -2,6 +2,7 @@ import User from '../models/User.js'
 import { sendEmailVerification } from '../emails/authEmailService.js'
 import { errorMessage, generateJWT } from '../utils/index.js'
 
+
 const register = async(req, res) => {
     if(Object.values(req.body).includes('')) {
         errorMessage(res, 400, 'Todos los campos son obligatorios')

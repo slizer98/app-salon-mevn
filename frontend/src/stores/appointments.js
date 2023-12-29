@@ -111,26 +111,26 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     }
 
     async function cancelAppointment(id) {
-        Swal.fire({
+        const resultado = await Swal.fire({
             title: '¿Estas seguro de cancelar la cita?',
-            text: "Si cancelas, la cita se eliminara y no podras asistir",
+            text: "Si cancelas, la cita se eliminara y no podrás asistir",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             confirmButtonText: 'Si, cancelar cita',
             cancelButtonText: 'No, dejar cita',
             cancelButtonColor: '#1c7430',
-          }).then(async(result) => {
-            if (result.isConfirmed) {
-                try {
-                    const { data } = await AppointmentAPI.delete(id)
-                    toast.open({ message: data.msg, type: 'success'})
-                    user.getUserAppoinments()
-                } catch (error) {
-                    toast.open({ message: error.response.data.msg, type: 'error'})
-                }
+        });
+    
+        if (resultado.isConfirmed) {
+            try {
+                const { data } = await AppointmentAPI.delete(id);
+                toast.open({ message: data.msg, type: 'success' });
+                user.userAppointments = user.userAppointments.filter(appointment => appointment._id !== id);
+            } catch (error) {
+                toast.open({ message: error.response.data.msg, type: 'error' });
             }
-          })
+        }
         
     }
     
