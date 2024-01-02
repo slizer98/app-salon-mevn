@@ -100,9 +100,7 @@ const deleteAppointment = async(req, res) => {
     }
 
     try {
-        const result = await appointment.deleteOne()
-        console.log(result)
-        return
+        const result = await Appointment.findByIdAndDelete(id)
         await sendEmailCancelAppointment({
             date: formatDate(result.date),
             time: result.time 
