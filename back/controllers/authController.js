@@ -1,6 +1,6 @@
 import User from '../models/User.js'
-import { sendEmailVerification } from '../emails/authEmailService.js'
-import { errorMessage, generateJWT } from '../utils/index.js'
+import { sendEmailVerification, sendEmailPasswordReset } from '../emails/authEmailService.js'
+import { errorMessage, generateJWT, uniqueId } from '../utils/index.js'
 
 
 const register = async(req, res) => {
@@ -71,14 +71,74 @@ const login = async (req, res) => {
     res.json({token})
  }
 
+ const forgotPassword = async(req, res) => {
+    const { email } = req.body
+
+    const user = await User.findOne({email})
+    if(!user) {
+        return errorMessage(res, 404, 'El usuario no existe')
+    }
+
+    try {
+        user.token = uniqueId()
+        const result = await user.save()
+
+        await sendEmailPasswordReset({
+            name: result.name,
+            email: result.email,
+            token: result.token
+        })
+        
+        res.json({msg: 'Hemos enviado un email con las instrucciones'})
+    } catch (error) {
+        console.log(error)
+    }
+ }
+
+ const verifyPasswordResetToken = async(req, res) => {
+    const { token } =req.params
+
+    const isValidToken = await User.findOne({token})
+    if(!isValidToken) {
+        return errorMessage(res, 400, 'Hubo un error, token no valido')
+    }
+    
+    res.json({ msg: 'Token valido'})
+ }
+
+ const updatePassword = async(req, res) => {
+    const { token } =req.params
+
+    const user = await User.findOne({token})
+    if(!user) {
+        return errorMessage(res, 400, 'Hubo un error, token no valido')
+    }
+    const { password } = req.body
+    
+    try {
+        user.token = ''
+        user.password = password
+        await user.save()
+
+        res.json({msg: 'Contraseña actualizada correctamente'})
+        
+    } catch (error) {
+        console.log(error)
+    }
+ }
+
  const user = async(req, res) => {
     const { user } = req
     res.json(user)
  }
 
+
 export {
     register,
     veryfyAccount,
     login,
+    forgotPassword,
+    verifyPasswordResetToken, 
+    updatePassword,
     user
 }
