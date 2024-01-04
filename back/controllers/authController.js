@@ -131,6 +131,13 @@ const login = async (req, res) => {
     const { user } = req
     res.json(user)
  }
+ const admin = async(req, res) => {
+    const { user } = req
+    if(!user.admin) {
+        errorMessage(res, 403, 'Acción no válida')
+    }
+    res.json(user)
+ }
 
 
 export {
@@ -140,5 +147,6 @@ export {
     forgotPassword,
     verifyPasswordResetToken, 
     updatePassword,
-    user
+    user, 
+    admin
 }
